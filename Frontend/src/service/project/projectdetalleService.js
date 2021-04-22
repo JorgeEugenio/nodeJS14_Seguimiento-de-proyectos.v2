@@ -17,7 +17,9 @@ export default class Projectdetalle{
         return axios.delete(ENDPOINT_PATH +'projectsdetallexid' + '/' + projectdetalleId)
     }
     readProjectxId(projectdetalleId){
-        console.log(ENDPOINT_PATH + 'projectsdetallexid/' + projectdetalleId);
         return axios.get( ENDPOINT_PATH + 'projectsdetallexid/' + projectdetalleId)
+    }
+    getUrlProjectodetalle(){
+        return urlBase
     }
 }

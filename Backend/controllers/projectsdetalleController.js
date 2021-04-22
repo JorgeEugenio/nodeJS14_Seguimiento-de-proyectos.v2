@@ -17,7 +17,8 @@ async function addProjectsdetalle(req, res){
         })
         if(req.file){
             const { filename} = req.file
-            projectdetalle.setUrlRecurso(filename)
+            console.log(idProject);
+            projectdetalle.setUrlRecurso(idProject, filename)
         }
         await projectdetalle.save()  
         res.status(201).send(projectdetalle)
@@ -107,7 +108,7 @@ async function getProjectsdetalle(req, res){
                                             "user_imgUrl":"$detalle1.imgUrl",
                                             "user_nombres":"$detalle1.nombres",
                                         })
-                                        console.log(projectdetalle);
+                                        //console.log(projectdetalle);
         res.status(200).send(projectdetalle)
     } catch (e) {
         res.status(500).send({message: e.message})

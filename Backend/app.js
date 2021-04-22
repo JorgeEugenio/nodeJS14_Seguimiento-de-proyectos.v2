@@ -10,6 +10,7 @@ const usuarioRoute = require('./routes/userRoute')
 const projectRoute = require('./routes/projectRoute')
 const permisoRoute = require('./routes/permisoRoute')
 const projectsdetalleRoute = require('./routes/projectsdetalleRoute')
+const productsRoute = require('./routes/productRoute')
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use('/',usuarioRoute)
 app.use('/',projectRoute)
 app.use('/',permisoRoute)
 app.use('/',projectsdetalleRoute)
+app.use('/',productsRoute)
 //app.use('/v1',principalRoute)
 
 app.use('/public', express.static(`${__dirname}/storage/img/`))

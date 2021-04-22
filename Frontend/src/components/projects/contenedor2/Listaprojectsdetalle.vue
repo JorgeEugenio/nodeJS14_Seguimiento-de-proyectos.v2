@@ -14,7 +14,6 @@
                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products">
 					<template #header>
 						<div class="table-header">
-							<h5 class="p-m-0">Detalles del Boleta</h5>
 							<span class="p-input-icon-left">
                                 <i class="pi pi-search" />
                                 <InputText v-model="filters['global']" placeholder="Search..." />
@@ -26,7 +25,7 @@
                             {{formatoCodigo(slotProps.data._id)}}
                         </template>
                     </Column>
-                    <Column field="detalle_fechaAvance" header="Avance" :sortable="true"></Column>
+                    <Column field="detalle_fechaAvance" header="Presentación" :sortable="true"></Column>
                     <Column field="detalle_projectDetalleName" header="Name" :sortable="true"></Column>
 					<Column field="detalle_urlRecurso" header="Tipo recurso" :sortable="true">
                         <template #body="slotProps">
@@ -67,7 +66,16 @@
 						<InputText id="tipoRecurso" v-model="projectdetalle.tipoRecurso" :class="{'p-invalid': submitted && !projectdetalle.tipoRecurso}" />
 					</div>
 					<div class="p-field">
-						<FileUpload name="demo[]" url="./upload.php" @upload="onUpload" :multiple="true" accept="image/*" :maxFileSize="1000000">
+						<FileUpload 
+						name="image" 
+						:url="urlProject" 
+						chooseLabel="Escoja"
+						:showUploadButton="true"
+						:showCancelButton="false"
+						accept="image/*" 
+						:maxFileSize="1000000"
+						@upload="onUpload"
+						:multiple="true" >
 							<template #empty>
 								<p>Drag and drop files to here to upload.</p>
 							</template>
@@ -109,12 +117,11 @@
 import ProjectService from '../../../service/project/projectService'
 import ProjectsdetalleService from '../../../service/project/projectdetalleService'
 class Projectdetalle{
-	constructor( idProject = '', projectDetalleName = '', fechaAvance = null, tipoRecurso = '', urlRecurso = ''){
+	constructor( idProject = '', projectDetalleName = '', fechaAvance = null, tipoRecurso = ''){
 		this.idProject = idProject
 		this.projectDetalleName = projectDetalleName
 		this.fechaAvance = fechaAvance
 		this.tipoRecurso = tipoRecurso
-		this.urlRecurso = urlRecurso
 	}
 }
 export default {
@@ -138,7 +145,8 @@ export default {
 			value: null,
 			validacion: null,
 			projectTemporalId: '',
-			projectdetalles: {}
+			projectdetalles: {},
+			image: ''
 
 
         }
@@ -156,11 +164,18 @@ export default {
 		}
     },
     mounted(){
+		this.urlProject = this.projectdetalleService.getUrlProjectodetalle()
+		//console.log(this.urlProject);
     },
     updated(){
     },
     methods:{
-        formatoFecha(valor){
+		onUpload(){
+			//console.log(this.projectdetalle.fileroute);
+
+            this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
+        },
+		formatoFecha(valor){
 			if (!valor) {
 				return null
 			}else{
@@ -185,22 +200,28 @@ export default {
 			const validacion = (
 				!this.projectdetalle.projectDetalleName != '' &&
 				!this.projectdetalle.fechaAvance != '' &&
-				!this.projectdetalle.tipoRecurso != '' &&
-				!this.projectdetalle.urlRecurso != '' 
+				!this.projectdetalle.tipoRecurso != '' 
 				)
 
 			if (!validacion) {
 
 				if (!this.projectdetalles) {
+					console.log('estoy en if');
 					await this.projectService.create(this.dataProject).then((data)=>this.projectTemporalId = data.data)
 					this.projectdetalle.idProject = this.projectTemporalId
+					console.log(this.projectdetalle);
 					await this.projectdetalleService.create(this.projectdetalle)
 					await this.projectdetalleService.readProjectxId(this.projectTemporalId).then(data=>this.projectdetalles = data.data)
+					this.onUpload()
 				}else if(!this.projectTemporalId){
+					console.log('estoy en elseif');
+					console.log(this.projectdetalles);
 					this.projectdetalle.idProject = this.dataProject._id
 					await this.projectdetalleService.create(this.projectdetalle)
-					await this.projectdetalleService.readProjectxId(this.projectdetalle.idProject).then(data=>this.projectdetalles = data.data)					
+					await this.projectdetalleService.readProjectxId(this.projectdetalle.idProject).then(data=>this.projectdetalles = data.data)
+					this.onUpload()
 				}else{
+					console.log('estoy en else');
 					this.projectdetalle.idProject = this.projectTemporalId
 					await this.projectdetalleService.create(this.projectdetalle)
 					await this.projectdetalleService.readProjectxId(this.projectTemporalId).then(data=>this.projectdetalles = data.data)
@@ -211,9 +232,6 @@ export default {
 				console.log('estoy en else');				
 			}
 		},
-		onUpload() {
-            this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
-        },
 		confirmDeleteProject(projectdetalle){
 			this.deleteProjectdetalleDialog = true
 			this.projectdetalle = projectdetalle

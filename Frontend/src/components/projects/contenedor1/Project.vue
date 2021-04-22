@@ -243,7 +243,7 @@ export default {
             if (validacion) {
                 if(!this.nuevo === true) {
 					this.projectDialog = false
-					console.log('estoy en if');
+					//console.log('estoy en if');
 
 					this.$emit('EventProject', {data1: this.user, data2: this.project, data3: null, mostrarProject: false, mostrarProjectdetalle : true})
                     this.$toast.add({severity:'success', summary: 'Successful', detail: 'Product Created', life: 3000});		
@@ -265,11 +265,11 @@ export default {
                         this.project = new Project();
                         this.projectDialog = false
                     });
-					console.log('estoy en else');
+					//console.log('estoy en else');
                     this.$toast.add({severity:'success', summary: 'Successful', detail: 'Product Updated', life: 3000});
                 }
             }else{
-				console.log('estoy fuera de else');
+				//console.log('estoy fuera de else');
                 this.projectDialog = true
             }
 		},

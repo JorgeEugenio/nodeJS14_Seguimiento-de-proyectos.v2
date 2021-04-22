@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const { appConfig } = require('../config')
-
 const Schema = mongoose.Schema
 
 const projectdetalleSchema = Schema({
@@ -9,14 +8,20 @@ const projectdetalleSchema = Schema({
     fechaAvance: Date,
     tipoRecurso: String,
     urlRecurso: String
-    //iddetalleProject: mongoose.ObjectId,
 },
 {
     timestamps: true
 })
-projectdetalleSchema.methods.setUrlRecurso = function setUrlRecurso(filename){
-    const  { host, port } = appConfig
-    this.urlRecurso = `${host}:${port}/public/${filename}`
-}
 
+
+/* projectdetalleSchema.methods.setUrlRecurso = function setUrlRecurso(fileroute, filename){
+    const  { host, port } = appConfig
+    this.urlRecurso = `${host}:${port}/public/${fileroute}/${filename}`
+} */
+
+projectdetalleSchema.methods.setUrlRecurso = function setUrlRecurso(idProject,filename){
+    const  { host, port } = appConfig
+    this.urlRecurso = `http://${host}:${port}/public/${idProject}/${filename}`
+    console.log(this.urlRecurso);
+}
 module.exports = mongoose.model('Projectsdetalle', projectdetalleSchema)

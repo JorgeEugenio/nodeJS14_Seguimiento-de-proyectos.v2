@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const fs = require('fs')
 const Project = require('../models/Project')
 
 
@@ -12,8 +13,12 @@ async function addProject(req, res){
             nombreProject,
             personacargoProject
         })
+        fs.mkdir(`./storage/img/${project._id}`, { recursive: true }, (err) => {
+            if (err) throw err;
+          });
         await project.save()
         res.status(201).send(project._id)
+        
     } catch (e) {
         res.status(500).send({message: e.message})
     }
