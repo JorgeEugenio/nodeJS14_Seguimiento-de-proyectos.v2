@@ -19,9 +19,9 @@ const projectdetalleSchema = Schema({
     this.urlRecurso = `${host}:${port}/public/${fileroute}/${filename}`
 } */
 
-projectdetalleSchema.methods.setUrlRecurso = function setUrlRecurso(idProject,filename){
+projectdetalleSchema.methods.setUrlRecurso = function setUrlRecurso(filename){
     const  { host, port } = appConfig
-    this.urlRecurso = `http://${host}:${port}/public/${idProject}/${filename}`
+    this.urlRecurso = `http://${host}:${port}/public/${filename}`
     console.log(this.urlRecurso);
 }
 module.exports = mongoose.model('Projectsdetalle', projectdetalleSchema)

@@ -2,8 +2,8 @@ import axios from 'axios'
 const { ENDPOINT_PATH } = require('../Config')
 const urlBase = ENDPOINT_PATH +'projectsdetalle'
 export default class Projectdetalle{
-    create(projectdetalle){
-        return axios.post( ENDPOINT_PATH +'projectsdetalle', projectdetalle )
+    create(file, projectdetalle){
+        return axios.post( ENDPOINT_PATH +'projectsdetalle',file, projectdetalle )
     }
     read(){
         return axios.get( urlBase )

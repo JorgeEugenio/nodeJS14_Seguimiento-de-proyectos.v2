@@ -17,8 +17,8 @@ async function addProjectsdetalle(req, res){
         })
         if(req.file){
             const { filename} = req.file
-            console.log(idProject);
-            projectdetalle.setUrlRecurso(idProject, filename)
+            projectdetalle.setUrlRecurso( filename)
+            console.log('pase un file');
         }
         await projectdetalle.save()  
         res.status(201).send(projectdetalle)

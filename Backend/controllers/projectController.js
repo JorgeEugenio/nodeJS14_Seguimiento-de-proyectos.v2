@@ -64,6 +64,9 @@ async function updateProject(req, res){
 async function deleteProject(req, res){
     try {
         await Project.findByIdAndDelete(req.params.id)
+        fs.rmdir(`./storage/img/${req.params.id}`, { recursive: true }, (err) => {
+            if (err) throw err;
+          });
         res.status(200).send({ status: 'Projects eliminado'})
     } catch (e) {
         res.status(500).send({ message: e.message})

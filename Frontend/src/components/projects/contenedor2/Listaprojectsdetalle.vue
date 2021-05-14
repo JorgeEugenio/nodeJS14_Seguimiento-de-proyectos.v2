@@ -70,16 +70,20 @@
 						name="image" 
 						:url="urlProject" 
 						chooseLabel="Escoja"
-						:showUploadButton="true"
-						:showCancelButton="false"
+						:showUploadButton="activar"
+						:showCancelButton="activar"
 						accept="image/*" 
 						:maxFileSize="1000000"
 						@upload="onUpload"
-						:multiple="true" >
+						:multiple="true" 
+						:dataFile="datafile"
+					
+						>
 							<template #empty>
 								<p>Drag and drop files to here to upload.</p>
 							</template>
 						</FileUpload>
+						<Button v-on:click="onUpload">cambio</Button>
 					</div>
 					<template #footer>
 						<Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -144,9 +148,12 @@ export default {
 			submitted: false,
 			value: null,
 			validacion: null,
-			projectTemporalId: '',
+			projectIdTemporal: '',
 			projectdetalles: {},
-			image: ''
+			image: '',
+			activar:false,
+			file: null,
+			datafile: {'name': 'valor1'}
 
 
         }
@@ -171,8 +178,9 @@ export default {
     },
     methods:{
 		onUpload(){
-			//console.log(this.projectdetalle.fileroute);
-
+			//console.log(e);
+			//console.log(this.activar);
+			this.activar = !this.activar
             this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
         },
 		formatoFecha(valor){
@@ -207,26 +215,29 @@ export default {
 
 				if (!this.projectdetalles) {
 					console.log('estoy en if');
-					await this.projectService.create(this.dataProject).then((data)=>this.projectTemporalId = data.data)
-					this.projectdetalle.idProject = this.projectTemporalId
+					await this.projectService.create(this.dataProject).then((data)=>this.projectIdTemporal = data.data)
+					this.projectdetalle.idProject = this.projectIdTemporal
 					console.log(this.projectdetalle);
-					await this.projectdetalleService.create(this.projectdetalle)
-					await this.projectdetalleService.readProjectxId(this.projectTemporalId).then(data=>this.projectdetalles = data.data)
-					this.onUpload()
-				}else if(!this.projectTemporalId){
+					console.log(this.file);
+					await this.projectdetalleService.create(this.file, this.projectdetalle)
+					await this.projectdetalleService.readProjectxId(this.projectIdTemporal).then(data=>this.projectdetalles = data.data)
+					this.activar = !this.activar
+				}else if(!this.projectIdTemporal){
 					console.log('estoy en elseif');
-					console.log(this.projectdetalles);
+					//console.log(this.projectdetalles);
+					console.log(this.file);
 					this.projectdetalle.idProject = this.dataProject._id
 					await this.projectdetalleService.create(this.projectdetalle)
 					await this.projectdetalleService.readProjectxId(this.projectdetalle.idProject).then(data=>this.projectdetalles = data.data)
-					this.onUpload()
+					this.activar = true
 				}else{
 					console.log('estoy en else');
-					this.projectdetalle.idProject = this.projectTemporalId
+					this.projectdetalle.idProject = this.projectIdTemporal
 					await this.projectdetalleService.create(this.projectdetalle)
-					await this.projectdetalleService.readProjectxId(this.projectTemporalId).then(data=>this.projectdetalles = data.data)
+					await this.projectdetalleService.readProjectxId(this.projectIdTemporal).then(data=>this.projectdetalles = data.data)
 				}
 				this.projectdetalleDialog = false;
+				this.activar = false
 				
 			}else{
 				console.log('estoy en else');				
